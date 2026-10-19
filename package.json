@@ -2,5 +2,9 @@
   "name": "@red-cup-engineering/xml-file-services-section",
   "version": "0.1.0",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/red-cup-engineering/xml-file-services-section.git"
+  }
 }
