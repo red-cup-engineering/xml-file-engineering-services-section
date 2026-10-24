@@ -1,11 +1,11 @@
 {
-  "name": "@red-cup-engineering/xml-file-services-section",
+  "name": "@red-cup-engineering/xml-file-engineering-services-section",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/red-cup-engineering/xml-file-services-section.git"
+    "url": "git+https://github.com/red-cup-engineering/xml-file-engineering-services-section.git"
   },
   "license": "MIT",
   "funding": {
