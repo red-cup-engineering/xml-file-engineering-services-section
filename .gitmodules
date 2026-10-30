@@ -1,4 +1,0 @@
-[submodule "xml-file-codec-service"]
-	path = services/xml-file-codec-service
-	url = https://github.com/red-cup-engineering/xml-file-codec-service.git
-	branch = main
