@@ -28,11 +28,7 @@ import {
   svgRoot,
 } from "../index.mjs";
 import { document, element, serialize, type XmlElement, type XmlNode } from "@red-cup-engineering/xml-file-codec-service";
-import type { ChargeCarrier, ChargeValueName } from "@lenticule-science/articulating/predicating/positing/bilattice-charge";
-import { termCoincides } from "@lenticule-science/articulating/predicating/predication";
-import type { Valuation } from "@lenticule-science/articulating/predicating/positing/fiber";
-import type { Meme } from "@lenticule-science/articulating/predicating/positing/fiber";
-import type { PredicationValuationClosureStageCarrier } from "@lenticule-science/articulating/predicating/positing/settling/valuation-closure";
+import type { Valued, ChargeValueName } from "@red-cup-engineering/metrologic/articulation/predicating/positing/valued";
 
 /* ── palette ────────────────────────────────────────────────────────────── */
 
@@ -74,7 +70,7 @@ export interface RadialSegment {
   readonly label?: string;
   readonly title?: string;
   readonly orbit?: Orbit;
-  readonly charge: ChargeCarrier;
+  readonly charge: Valued;
   readonly weight?: number;
 }
 
@@ -279,60 +275,6 @@ export function projectRadial(dataform: RadialDataform, options: ProjectRadialOp
 }
 
 export { serialize };
-
-/* ── adapters ───────────────────────────────────────────────────────────── */
-
-const termLabel = (term: { readonly mark: { readonly value: unknown } }): string => String(term.mark.value);
-const predicateLabel = (predicate: { readonly claim: { readonly mark: { readonly value: unknown } } }): string =>
-  String(predicate.claim.mark.value);
-
-/** A charged cell (Meme) as a segment: orbit from subject↔object identity. */
-export function segmentOfMeme(meme: Meme): RadialSegment {
-  const subject = termLabel(meme.cell.subject);
-  const object = termLabel(meme.cell.object);
-  const predicate = predicateLabel(meme.cell.predicate);
-  const orbit: Orbit = termCoincides(meme.cell.subject, meme.cell.object) ? "diagonal" : "off-diagonal";
-  return Object.freeze({
-    e: `${subject} ${predicate} ${object}`,
-    a: predicate,
-    v: object,
-    label: orbit === "diagonal" ? `${subject} ${predicate}` : `${subject} ${predicate} ${object}`,
-    orbit,
-    charge: meme.charge,
-  });
-}
-
-/**
- * A radial diagram of one valuation: one concentric ring PER predicate fiber,
- * each ring's segments the fiber's charged `(subject, object)` cells.
- */
-export function radialFromValuation(valuation: Valuation, dataform: Partial<RadialDataform> = {}): RadialDataform {
-  const rings = valuation.fibers.map((fiber, index) =>
-    Object.freeze({
-      ordinal: index,
-      label: predicateLabel(fiber.predicate),
-      segments: Object.freeze(fiber.assignments.map(segmentOfMeme)),
-    }) satisfies RadialRing);
-  return Object.freeze({ ...dataform, rings: Object.freeze(rings) });
-}
-
-/**
- * A radial diagram of a valuation-closure: one concentric ring PER ordinal stage,
- * each ring's segments that stage's charged cells. The "finite element-set that
- * varies with the settling ordinal" reading. The ring's ordinal is its position
- * in the closure sequence (stage 0 first).
- */
-export function radialFromClosureStages(
-  stages: readonly PredicationValuationClosureStageCarrier[],
-  dataform: Partial<RadialDataform> = {},
-): RadialDataform {
-  const rings = stages.map((stage, index) =>
-    Object.freeze({
-      ordinal: index,
-      segments: Object.freeze(stage.valuation.fibers.flatMap((fiber) => fiber.assignments.map(segmentOfMeme))),
-    }) satisfies RadialRing);
-  return Object.freeze({ ...dataform, rings: Object.freeze(rings) });
-}
 
 /** The neutral fallback charge for a plainly-asserted segment: re-exported from svg. */
 export { affirmedCharge };

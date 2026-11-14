@@ -10,14 +10,7 @@
  * @packageDocumentation
  */
 import { restrict, type Projector } from "@red-cup-engineering/file-projection-kernel-service";
-import {
-  charge,
-  chargeValue,
-  valueOf,
-  chargeValueName,
-  type ChargeCarrier,
-  type ChargeValueName,
-} from "@lenticule-science/articulating/predicating/positing/bilattice-charge";
+import { valued, type Valued, type ChargeValueName } from "@red-cup-engineering/metrologic/articulation/predicating/positing/valued";
 import { document, element, serialize, xmlProjector, type XmlElement, type XmlNode } from "@red-cup-engineering/xml-file-codec-service";
 
 /* ── morphism ───────────────────────────────────────────────────────────── */
@@ -232,7 +225,7 @@ export interface PlacedCell {
   readonly href?: string;
   readonly focus?: boolean;
   readonly data?: Readonly<Record<string, string | number>>;
-  readonly charge: ChargeCarrier;
+  readonly charge: Valued;
   readonly box: Box;
 }
 
@@ -242,7 +235,7 @@ export interface PlacedEdge {
   readonly to: string;
   readonly kind?: string;
   readonly href?: string;
-  readonly charge: ChargeCarrier;
+  readonly charge: Valued;
   readonly fromBox: Box;
   readonly toBox: Box;
 }
@@ -261,17 +254,17 @@ export interface SvgDataform {
 }
 
 /** The default charge for a plainly-asserted datum: affirmed (potential). */
-export function affirmedCharge(): ChargeCarrier {
-  return charge(chargeValue("potential"), [[], []]);
+export function affirmedCharge(): Valued {
+  return valued("potential");
 }
 
-const present = (c: ChargeCarrier, side: 0 | 1): boolean => c.value[side].name === "present";
+const present = (c: Valued, side: 0 | 1): boolean => c.value === "stable" || c.value === (side === 0 ? "potential" : "active");
 
 /** The bilattice value-name of a charge (potential | active | stable | absurd). */
-export const chargeValueOf = (c: ChargeCarrier): ChargeValueName => chargeValueName(valueOf(c));
+export const chargeValueOf = (c: Valued): ChargeValueName => c.value;
 
 /** A compact charge glyph: ⊤ both, ⊥ neither, t truth-only, f falsity-only. */
-export function chargeMark(c: ChargeCarrier): "t" | "f" | "⊥" | "⊤" {
+export function chargeMark(c: Valued): "t" | "f" | "⊥" | "⊤" {
   const value = chargeValueOf(c);
   if (value === "stable") return "⊤";
   if (value === "absurd") return "⊥";
@@ -279,14 +272,14 @@ export function chargeMark(c: ChargeCarrier): "t" | "f" | "⊥" | "⊤" {
 }
 
 /** A contested (stable) charge projected to one side; otherwise the value itself. */
-export function calmChargeOf(c: ChargeCarrier, projection: "supported" | "negated" = "supported"): ChargeValueName {
+export function calmChargeOf(c: Valued, projection: "supported" | "negated" = "supported"): ChargeValueName {
   const value = chargeValueOf(c);
   if (value !== "stable") return value;
   return projection === "negated" ? "active" : "potential";
 }
 
 /** The bilattice charge attributes for a cell or edge (data-positive/.../mark). */
-export function chargeAttributes(c: ChargeCarrier): Record<string, string> {
+export function chargeAttributes(c: Valued): Record<string, string> {
   return {
     "data-positive": String(present(c, 0)),
     "data-negative": String(present(c, 1)),
