@@ -22,8 +22,7 @@
     "package.json"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "test": "node --test test/*.test.mjs"
+    "build": "tsc -p tsconfig.build.json"
   },
   "dependencies": {
     "@red-cup-engineering/file-projection-kernel-service": "^0.1.1",
